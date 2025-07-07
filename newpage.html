@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Ensure proper scaling on mobile devices -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>MY SMART SENTENCE - NEW PAGE</title>
+  <style>
+    /* 
+      Add a #scaler wrapper with a fixed width of 1200px, 
+      then scale it down on smaller screens 
+    */
+    #scaler {
+      width: 1200px; /* Desktop reference width */
+      margin: 0;
+      transform-origin: top left;
+    }
+    body {
+      font-family: 'Lexend', sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      min-height: 100vh;
+    }
+
+    h1 {
+      margin: 0;
+      padding: 20px 0;
+      font-size: 2em;
+      background-color: #3366FF;
+      color: #FFFFFF;
+      width: 100%;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-bottom: 2px solid #999;
+    }
+
+    .slot-machine-wrapper {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .nav-button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      max-height: 60px;
+    }
+    .nav-button:hover {
+      background-color: #45a049;
+    }
+
+    .slot-machine {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 40px;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .reel-title {
+      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      border-radius: 8px;
+      padding: 4px 8px;
+      text-align: center;
+      font-size: 28px;
+      min-height: 40px;
+      line-height: 40px;
+      white-space: nowrap;
+    }
+    .reel-title.hidden {
+      visibility: hidden;
+    }
+
+    .reel {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      border: 4px solid #333;
+      border-radius: 20px;
+      background-color: white;
+      overflow: hidden;
+      position: relative;
+      box-sizing: border-box;
+      text-align: center;
+      height: 240px;
+    }
+    .images {
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.5s ease;
+    }
+
+    .image-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      box-sizing: border-box;
+      height: 240px;
+      padding: 10px;
+    }
+    .image-container img {
+      width: 160px;
+      height: auto;
+    }
+
+    .label {
+      margin-top: 8px;
+      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-size: 28px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .button-group {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .arrow-button {
+      width: 60px;
+      height: 60px;
+      font-size: 40px;
+      background-color: #f2f2f2;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      cursor: pointer;
+      outline: none;
+    }
+    .arrow-button:hover {
+      background-color: #eee;
+    }
+    .arrow-button:active {
+      background-color: #ddd;
+    }
+
+  /* ─── Horizontal navigation for Column 3 ─── */
+  .reel-horizontal{
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+  }
+  .horiz-container{
+    width:240px;            /* viewport */
+    height:240px;           /* match reel */
+    overflow:hidden;        /* hide off‑screen categories */
+  }
+
+  .horiz-strip{
+    display:flex;
+    flex-direction:row;
+    transition:transform 0.5s ease;
+  }
+
+  .category{
+    flex:0 0 240px;   /* fixed width so translateX works in 240 px steps */
+    width:240px;
+  }
+  /* Center image & label inside column‑3 cards */
+  .reel-horizontal .image-container{
+    justify-content:center;  /* vertical centering */
+  }
+  /* Hide the label on the first picture in each Column‑3 category */
+  .category .image-container:first-child .label{
+    display:none;
+  }
+  .horiz-arrow{
+    width:30px;
+    height:240px;            /* equal to reel height */
+    font-size:32px;
+    background-color:#f2f2f2;
+    border:2px solid #ccc;
+    border-radius:10px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .horiz-arrow:hover{ background-color:#eee; }
+  .horiz-arrow:active{ background-color:#ddd; }
+
+    .sentence-container {
+      text-align: center;
+    }
+    h2 {
+      margin: 5px 0;
+      font-size: 2em;
+    }
+
+    #combinedLabels {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 2.5em;
+      font-weight: normal;
+      color: #333;
+      padding: 10px 20px;
+      background-color: #ffffff;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    #reel1 .label { background-color: #ffcc00; color: #fff; }
+    #reel2 .label { background-color: #4caf50; color: #fff; }
+    #reel3 .label { background-color: #2196f3; color: #fff; }
+    #reel4 .label { background-color: #9c27b0; color: #fff; }
+
+    #combinedLabels, #grammarFeedback {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease, opacity 0.5s ease;
+    }
+    #combinedLabels.open, #grammarFeedback.open {
+      max-height: 200px;
+      opacity: 1;
+    }
+
+    #checkButton {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    #checkButton:hover {
+      background-color: #45a049;
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+    }
+    #checkButton:active {
+      background-color: #3e8e41;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      transform: translateY(2px);
+    }
+
+    /* The “View Combined” button can remain in normal flow below. */
+    .view-combined-row {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    #combinedButton {
+      background-color: #FF9800;
+      margin: 0 10px;
+    }
+    #combinedButton:hover {
+      background-color: #fb8c00;
+    }
+   #newPageButtonRight {
+  display: none !important;
+}
+    #newPageButtonRight, #newPageButtonLeft {
+  width: 50px;       /* Make width = height */
+  height: 50px;      /* Same dimension for a circle */
+  border-radius: 50%; /* Fully rounded corners => circle */
+  padding: 0;        /* Remove extra padding to keep it perfectly circular */
+  font-size: 24px;   /* Adjust arrow size */
+  border: none;
+  cursor: pointer;
+  background-color: #3133c0;
+  color: #FFFFFF;
+  /* Optional: center the arrow if needed */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@keyframes slideOutRight {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100%); /* move page 100% to the right */
+  }
+}
+
+.slide-out {
+  animation: slideOutRight 0.5s forwards;
+}
+/* 1) Keyframes for fade out */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* 2) Class that triggers the fade-out animation */
+.fade-out {
+  animation: fadeOut 0.5s forwards;
+}
+  </style>
+  <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+</head>
+<body>
+  <!-- Wrap the entire content in #scaler for dynamic scaling -->
+  <div id="scaler">
+  <h1>MY SMART SENTENCE</h1>
+  <audio id="correctSound" src="sounds/correct.mp3"></audio>
+  <audio id="incorrectSound" src="sounds/incorrect.mp3"></audio>
+
+  <!-- Wrap the slot-machine and the 2 "Go Back" buttons in a single flex container -->
+  <div class="slot-machine-wrapper">
+    <!-- Left "Go Back To Main" button -->
+    <button id="newPageButtonLeft" class="nav-button">←</button>
+
+    <!-- The reels (slot-machine) -->
+    <div class="slot-machine">
+      <!-- Column 1 -->
+      <div class="column">
+        <div class="reel-title">Gua</div>
+        <div class="reel" id="reel1">
+          <div class="images" id="images1">
+            <div class="image-container">
+              <img src="images/he.webp" alt="Strawberry">
+              <div class="label">He</div>
+            </div>
+            <div class="image-container">
+              <img src="images/she.webp" alt="Banana">
+              <div class="label">She</div>
+            </div>
+            <div class="image-container">
+              <img src="images/it.webp" alt="Orange">
+              <div class="label">It</div>
+            </div>
+            <div class="image-container">
+              <img src="images/they.webp" alt="Apple">
+              <div class="label">They</div>
+            </div>            
+          </div>
+        </div>
+        <div class="button-group">
+          <button class="arrow-button" onclick="scrollUp(1)">▲</button>
+          <button class="arrow-button" onclick="scrollDown(1)">▼</button>
+        </div>
+      </div>
+
+      <!-- Column 2 -->
+      <div class="column">
+        <div class="reel-title hidden"></div>
+        <div class="reel" id="reel2">
+          <div class="images" id="images2">
+            <div class="image-container">
+              <img src="images/is.png" alt="Strawberry">
+              <div class="label">is</div>
+            </div>
+            <div class="image-container">
+              <img src="images/are.png" alt="Banana">
+              <div class="label">are</div>
+            </div>
+          </div>
+        </div>
+        <div class="button-group">
+          <button class="arrow-button" onclick="scrollUp(2)">▲</button>
+          <button class="arrow-button" onclick="scrollDown(2)">▼</button>
+        </div>
+      </div>
+
+
+      <!-- Column 3 -->
+      <div class="column">
+        <div class="reel-title">No</div>
+        <div class="reel reel-horizontal" id="reel3">
+          <button class="horiz-arrow" onclick="slideCategory('left')">◀</button>
+          <div class="horiz-container" id="horizContainer3">
+            <div class="horiz-strip" id="horizStrip3">
+              <!-- Size adjectives -->
+              <div class="images category" id="images3_0">
+                <div class="image-container"><img src="images/size.png"><div class="label"></div></div>
+                <div class="image-container"><img src="images/big.png"><div class="label">big.</div></div>
+                <div class="image-container"><img src="images/small.png"><div class="label">small.</div></div>
+                <div class="image-container"><img src="images/tall.png"><div class="label">tall.</div></div>
+                <div class="image-container"><img src="images/short.png"><div class="label">short.</div></div>
+                <div class="image-container"><img src="images/thick.png"><div class="label">thick.</div></div>
+                <div class="image-container"><img src="images/thin.png"><div class="label">thin.</div></div>
+                <div class="image-container"><img src="images/wide.png"><div class="label">wide.</div></div>
+                <div class="image-container"><img src="images/narrow.png"><div class="label">narrow.</div></div>
+              </div>
+              <!-- Colour adjectives -->
+              <div class="images category" id="images3_1">
+                <div class="image-container"><img src="images/colour.png"><div class="label"></div></div>
+                <div class="image-container"><img src="images/red.png"><div class="label">red.</div></div>
+                <div class="image-container"><img src="images/blue.png"><div class="label">blue.</div></div>
+                <div class="image-container"><img src="images/yellow.png"><div class="label">yellow.</div></div>
+                <div class="image-container"><img src="images/green.png"><div class="label">green.</div></div>
+                <div class="image-container"><img src="images/orange.png"><div class="label">orange.</div></div>
+                <div class="image-container"><img src="images/purple.png"><div class="label">purple.</div></div>
+                <div class="image-container"><img src="images/pink.png"><div class="label">pink.</div></div>
+                <div class="image-container"><img src="images/black.png"><div class="label">black.</div></div>
+              </div>
+              <!-- Quality / Condition adjectives -->
+              <div class="images category" id="images3_2">
+                <div class="image-container"><img src="images/condition.png"><div class="label"></div></div>
+                <div class="image-container"><img src="images/clean.png"><div class="label">clean.</div></div>
+                <div class="image-container"><img src="images/dirty.png"><div class="label">dirty.</div></div>
+                <div class="image-container"><img src="images/new.png"><div class="label">new.</div></div>
+                <div class="image-container"><img src="images/old.png"><div class="label">old.</div></div>
+              </div>
+              <!-- Appearance adjectives -->
+              <div class="images category" id="images3_3">
+                <div class="image-container"><img src="images/appearance.png"><div class="label"></div></div>
+                <div class="image-container"><img src="images/pretty.png"><div class="label">pretty.</div></div>
+                <div class="image-container"><img src="images/ugly.png"><div class="label">ugly.</div></div>
+                <div class="image-container"><img src="images/handsome.png"><div class="label">handsome.</div></div>
+                <div class="image-container"><img src="images/mugly.png"><div class="label">ugly.</div></div>
+                <div class="image-container"><img src="images/fat.png"><div class="label">fat.</div></div>
+                <div class="image-container"><img src="images/pthin.png"><div class="label">thin.</div></div>
+                <div class="image-container"><img src="images/young.png"><div class="label">young.</div></div>
+                <div class="image-container"><img src="images/pold.png"><div class="label">old.</div></div>
+              </div>
+            </div> <!-- /.horiz-strip -->
+          </div> <!-- /.horiz-container -->
+          <button class="horiz-arrow" onclick="slideCategory('right')">▶</button>
+        </div>
+        <div class="button-group">
+          <button class="arrow-button" onclick="scrollUp(3)">▲</button>
+          <button class="arrow-button" onclick="scrollDown(3)">▼</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right "Go Back To Main" button -->
+    <button id="newPageButtonRight" class="nav-button">→</button>
+  </div>
+
+  <div style="margin: 20px 0;">
+    <button id="checkButton">Check</button>
+  </div>
+
+  <!-- Sentence Section -->
+  <div class="sentence-container">
+    <h2>My Sentence</h2>
+    <div id="combinedLabels"></div>
+    <div id="grammarFeedback" style="margin-top: 10px; font-size: 18px;"></div>
+  </div>
+<!-- "View Combined" button in its own row below everything -->
+<div class="view-combined-row">
+  <button id="combinedButton" class="nav-button">View Combined</button>
+</div>
+</div> <!-- /#scaler -->
+  
+
+  <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+  <script>
+    const reelPositions = [0, 0, 0, 0];
+    const reelLabels = [];
+    let currentAudio = null;
+
+  /* ─── State for horizontal navigation in Column 3 ─── */
+  let categoryIndex3 = 0;
+  const categoryCount3 = 4;
+  /* Slide Column 3 horizontally between adjective categories */
+  function slideCategory(dir){
+    if(dir === 'left'){
+      categoryIndex3 = (categoryIndex3 - 1 + categoryCount3) % categoryCount3;
+    }else{
+      categoryIndex3 = (categoryIndex3 + 1) % categoryCount3;
+    }
+    const offsetX = categoryIndex3 * 240;       // 240px = width of one image column
+    document.getElementById('horizStrip3').style.transform = `translateX(-${offsetX}px)`;
+    
+    /* Re‑build labels for the active category so vertical scroll & sentence builder stay in sync */
+    const containers = document.querySelectorAll(`#images3_${categoryIndex3} .image-container`);
+    reelLabels[2] = Array.from(containers).map(c => c.querySelector('.label').textContent.trim());
+    reelPositions[2] = 0;   // reset vertical position
+    document.querySelectorAll('[id^="images3_"]').forEach(el => el.style.transform = 'translateY(0px)');
+    
+    // Hide previously combined sentence / feedback
+    document.getElementById("combinedLabels").classList.remove("open");
+    document.getElementById("grammarFeedback").classList.remove("open");
+  }
+
+    function playSound(soundFile) {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+      }
+      currentAudio = new Audio(soundFile);
+      currentAudio.play();
+    }
+
+    function speak(text) {
+      if (window.responsiveVoice) {
+        responsiveVoice.speak(text, "UK English Male");
+      } else {
+        console.error("ResponsiveVoice API is not available.");
+      }
+    }
+    // This function adjusts the scale of #scaler based on the window's width
+  function setScale() {
+    const scaler = document.getElementById('scaler');
+    const availableWidth = document.documentElement.clientWidth || window.innerWidth;
+    let scaleVal = availableWidth / 1200; // match the #scaler width of 1200px
+
+    // Never upscale beyond 100%
+    if (scaleVal > 1) {
+      scaleVal = 1;
+    }
+
+    // Apply the scale transform
+    scaler.style.transform = `scale(${scaleVal})`;
+    scaler.style.transformOrigin = 'top left';
+  }
+
+  // 1. Call our scaling function once the page loads
+  window.addEventListener('load', setScale);
+
+  // 2. Re-calculate scale whenever the window is resized
+  window.addEventListener('resize', setScale);
+
+    // Left "Go Back" button
+    document.getElementById('newPageButtonLeft').addEventListener('click', function(event) {
+  event.preventDefault(); // Stop immediate navigation
+  
+  // 1. Trigger the slide-out animation
+  document.body.classList.add('slide-out');
+  
+  // 2. Wait for the animation to finish
+  setTimeout(() => {
+    window.location.href = 'anotherpage.html';
+  }, 500); // match the 0.5s duration in your CSS
+});
+
+    // Right "Go Back" button
+    document.getElementById('newPageButtonRight').addEventListener('click', function() {
+      window.location.href = 'anotherpage.html';
+    });
+    // "View Combined" button
+    document.getElementById('combinedButton').addEventListener('click', function(event) {
+  // 1. Prevent the immediate navigation
+  event.preventDefault();
+  
+  // 2. Add the .fade-out class to body (or #scaler if you prefer)
+  document.body.classList.add('fade-out');
+  
+  // 3. Wait 500ms (same as animation duration: 0.5s) then go to newpage.html
+  setTimeout(() => {
+    window.location.href = 'combinedpage.html';
+  }, 500);
+});
+
+   
+
+    window.onload = function() {
+      const totalReels = 4;
+      for (let reelNumber = 1; reelNumber <= totalReels; reelNumber++) {
+        if (reelNumber === 3){
+          const containers = document.querySelectorAll('#images3_0 .image-container');
+          reelLabels.push(Array.from(containers).map(c => c.querySelector('.label').textContent.trim()));
+        }else{
+          const containers = document.querySelectorAll(`#images${reelNumber} .image-container`);
+          reelLabels.push(Array.from(containers).map(c => c.querySelector('.label').textContent.trim()));
+        }
+      }
+
+      document.getElementById("checkButton").addEventListener("click", () => {
+        const combinedLabelsDiv = document.getElementById("combinedLabels");
+        const grammarFeedbackDiv = document.getElementById("grammarFeedback");
+
+        // Generate the sentence
+        const currentLabels = reelPositions.map((pos, reelIndex) => {
+          return reelLabels[reelIndex][pos];
+        });
+        combinedLabelsDiv.textContent = currentLabels.join(" ");
+
+        // Show combined labels & grammar feedback
+        combinedLabelsDiv.classList.add("open");
+        grammarFeedbackDiv.classList.add("open");
+
+        // Perform grammar check
+        checkGrammar(combinedLabelsDiv.textContent);
+
+        // Save sentence to localStorage
+        localStorage.setItem("thirdSentence", combinedLabelsDiv.textContent.trim());
+      });
+
+      document.querySelectorAll('.label').forEach(labelEl => {
+        labelEl.addEventListener('click', () => {
+          speak(labelEl.textContent.trim());
+        });
+      });
+    };
+
+    function scrollUp(reelNumber) {
+      const reelIndex = reelNumber - 1;
+      const reelLength = reelLabels[reelIndex].length;
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+      }
+      reelPositions[reelIndex] = (reelPositions[reelIndex] - 1 + reelLength) % reelLength;
+      const offset = reelPositions[reelIndex] * 240;
+      const targetId = reelNumber === 3 ? `images3_${categoryIndex3}` : `images${reelNumber}`;
+      document.getElementById(targetId).style.transform = `translateY(-${offset}px)`;
+
+      // Hide combined labels & grammar feedback again
+      document.getElementById("combinedLabels").classList.remove("open");
+      document.getElementById("grammarFeedback").classList.remove("open");
+
+      const currentLabel = reelLabels[reelIndex][reelPositions[reelIndex]];
+      speak(currentLabel);
+    }
+
+    function scrollDown(reelNumber) {
+      const reelIndex = reelNumber - 1;
+      const reelLength = reelLabels[reelIndex].length;
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+      }
+      reelPositions[reelIndex] = (reelPositions[reelIndex] + 1) % reelLength;
+      const offset = reelPositions[reelIndex] * 240;
+      const targetId = reelNumber === 3 ? `images3_${categoryIndex3}` : `images${reelNumber}`;
+      document.getElementById(targetId).style.transform = `translateY(-${offset}px)`;
+
+      // Hide combined labels & grammar feedback again
+      document.getElementById("combinedLabels").classList.remove("open");
+      document.getElementById("grammarFeedback").classList.remove("open");
+
+      const currentLabel = reelLabels[reelIndex][reelPositions[reelIndex]];
+      speak(currentLabel);
+    }
+
+    function checkGrammar(sentence) {
+      const feedbackElement = document.getElementById("grammarFeedback");
+      // Normalise whitespace and trim the sentence
+      sentence = sentence.trim().replace(/\s+/g, ' ');
+     const rules = [
+  // ✅ Singular subject + "is" + valid adjective
+  {
+    pattern: /^(He|She|It) is (big\.|small\.|tall\.|short\.|thick\.|thin\.|wide\.|narrow\.|red\.|blue\.|yellow\.|green\.|orange\.|purple\.|pink\.|black\.|clean\.|dirty\.|new\.|old\.|pretty\.|ugly\.|handsome\.|fat\.|young\.)$/,
+    feedback: "Correct sentence!",
+    sound: "sounds/correct.mp3"
+  },
+
+  // ✅ Plural subject + "are" + valid adjective
+  {
+    pattern: /^They are (big\.|small\.|tall\.|short\.|thick\.|thin\.|wide\.|narrow\.|red\.|blue\.|yellow\.|green\.|orange\.|purple\.|pink\.|black\.|clean\.|dirty\.|new\.|old\.|pretty\.|ugly\.|handsome\.|fat\.|young\.)$/,
+    feedback: "Correct sentence!",
+    sound: "sounds/correct.mp3"
+  },
+
+  // ❌ Singular subject using "are"
+  {
+    pattern: /^(He|She|It) are .+$/,
+    feedback: "Incorrect. Use 'is' with singular subjects.",
+    sound: "sounds/incorrect.mp3"
+  },
+
+  // ❌ Plural subject using "is"
+  {
+    pattern: /^They is .+$/,
+    feedback: "Incorrect. Use 'are' with plural subjects.",
+    sound: "sounds/incorrect.mp3"
+  },
+
+  // ❌ Any sentence that doesn’t match expected pattern
+  {
+    pattern: /^.+$/,
+    feedback: "Incorrect sentence. Check the subject, verb, and adjective.",
+    sound: "sounds/incorrect.mp3"
+  }
+];
+
+      const matchedRule = rules.find(rule => rule.pattern.test(sentence));
+      if (matchedRule) {
+        feedbackElement.textContent = matchedRule.feedback;
+        feedbackElement.style.color = matchedRule.feedback.includes("Correct") ? "green" : "red";
+        playSound(matchedRule.sound);
+      } else {
+        feedbackElement.textContent = "Invalid sentence structure. Check subject-verb agreement or quantifier usage.";
+        feedbackElement.style.color = "red";
+        playSound("sounds/incorrect.mp3");
+      }
+    }
+  </script>
+</body>
+</html>

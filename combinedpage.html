@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Combined Sentences</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* 
+      Add a #scaler wrapper with a fixed width of 1200px, 
+      then scale it down on smaller screens 
+    */
+    #scaler {
+      width: 1200px; /* Desktop reference width */
+      margin: 0;
+      transform-origin: top left;
+    }
+    body {
+      font-family: 'Lexend', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    h1 {
+      margin: 0;
+      margin-bottom: 20px;
+      padding: 20px 0;
+      font-size: 2em;
+      background-color: #3366FF;
+      color: #FFFFFF;
+      width: 100%;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .container {
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column; 
+      align-items: center;
+      width: 100%;
+    }
+
+    h2 {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    #finalParagraph {
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      border-radius: 8px;
+      max-width: 800px;
+      min-height: auto;
+      width: 80%;
+      margin-bottom: 20px;
+      padding: 20px;
+      font-size: 3em;
+      color: #333;
+      text-align: left;
+    }
+
+    #goBackButton {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #goBackButton:hover {
+      background-color: #45a049;
+    }
+    @keyframes slideOutRight {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100%); /* move page 100% to the right */
+  }
+}
+
+.slide-out {
+  animation: slideOutRight 0.5s forwards;
+}
+  </style>
+</head>
+<body>
+  <!-- Wrap the entire content in #scaler for dynamic scaling -->
+  <div id="scaler">
+  <h1>MY SMART SENTENCE</h1>
+  <div class="container">
+    <h2>My Sentence</h2>
+    <div id="finalParagraph"></div>
+    <button id="goBackButton">Try again</button>
+  </div>
+</div> <!-- /#scaler -->
+
+  <script>
+    // This function adjusts the scale of #scaler based on the window's width
+  function setScale() {
+    const scaler = document.getElementById('scaler');
+    const availableWidth = document.documentElement.clientWidth || window.innerWidth;
+    let scaleVal = availableWidth / 1200; // match the #scaler width of 1200px
+
+    // Never upscale beyond 100%
+    if (scaleVal > 1) {
+      scaleVal = 1;
+    }
+
+    // Apply the scale transform
+    scaler.style.transform = `scale(${scaleVal})`;
+    scaler.style.transformOrigin = 'top left';
+  }
+
+  // 1. Call our scaling function once the page loads
+  window.addEventListener('load', setScale);
+
+  // 2. Re-calculate scale whenever the window is resized
+  window.addEventListener('resize', setScale);
+    // Retrieve the three sentences from localStorage
+    const firstSentence  = localStorage.getItem("firstSentence")  || "";
+    const secondSentence = localStorage.getItem("secondSentence") || "";
+    const thirdSentence = localStorage.getItem("thirdSentence") || "";
+    
+
+    // Combine them all:
+    const combinedParagraph = firstSentence + " " + secondSentence + " " + thirdSentence;
+
+    // Display it in finalParagraph
+    document.getElementById("finalParagraph").textContent = combinedParagraph;
+
+    // "Go Back" button logic
+    document.getElementById('goBackButton').addEventListener('click', function(event) {
+  event.preventDefault(); // Stop immediate navigation
+  
+  // 1. Trigger the slide-out animation
+  document.body.classList.add('slide-out');
+  
+  // 2. Wait for the animation to finish
+  setTimeout(() => {
+    window.location.href = 'index.html';
+  }, 500); // match the 0.5s duration in your CSS
+});
+  </script>
+</body>
+</html>
